@@ -1,7 +1,7 @@
 import { createContext, useState } from "react";
 import runChat from "../config/gemini";
 
-export const Context = createContext();
+export const ChatContext = createContext();
 
 const ContextProvider = (props) => {
   const [input, setInput] = useState("");
@@ -29,8 +29,15 @@ const ContextProvider = (props) => {
 
     let response;
     if (prompt !== undefined) {
-      response = await runChat(prompt);
       setRecentPrompt(prompt);
+    response = await runChat(prompt);
+
+    setPrevPrompts((prev) => {
+      if (!prev.includes(prompt)) {
+        return [prompt, ...prev];
+      }
+      return prev;
+    });
     } else {
       setPrevPrompts((prev) => [input, ...prev]);
       setRecentPrompt(input);
@@ -73,7 +80,7 @@ const ContextProvider = (props) => {
   };
 
   return (
-    <Context.Provider value={contextValue}>{props.children}</Context.Provider>
+    <ChatContext.Provider value={contextValue}>{props.children}</ChatContext.Provider>
   );
 };
 

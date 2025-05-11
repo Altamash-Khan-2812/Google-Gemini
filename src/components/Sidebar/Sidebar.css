@@ -24,6 +24,7 @@
   gap: 10px;
   padding: 10px 15px;
   background-color: #e6eaf1;
+  cursor: pointer;
 }
 
 .sidebar .recent {

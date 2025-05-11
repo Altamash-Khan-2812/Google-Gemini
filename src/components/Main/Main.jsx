@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import "./Main.css";
 import { assets } from "../../assets/assets";
-import { Context } from "../../context/Context";
+import { ChatContext } from "../../context/Context";
 
 const Main = () => {
   const {
@@ -12,7 +12,17 @@ const Main = () => {
     resultData,
     setInput,
     input,
-  } = useContext(Context);
+  } = useContext(ChatContext);
+
+  function inputChangeHandler(e){
+    setInput(e.target.value)
+  }
+
+  function handlerCard(e){
+    const text = e.target.children[0].textContent;
+    setInput(text);
+    onSent(text)
+  }
 
   return (
     <div className="main">
@@ -32,19 +42,19 @@ const Main = () => {
             </div>
 
             <div className="cards">
-              <div className="card">
+              <div className="card" onClick={handlerCard}>
                 <p>Suggest beautiful places to see on an upcoming road trip</p>
                 <img src={assets.compass_icon} alt="" />
               </div>
-              <div className="card">
+              <div className="card" onClick={handlerCard}>
                 <p>Briefly summarize this concept: urban planning</p>
                 <img src={assets.bulb_icon} alt="" />
               </div>
-              <div className="card">
+              <div className="card" onClick={handlerCard}>
                 <p>Brainstorm team bonding activities for our work retreat</p>
                 <img src={assets.message_icon} alt="" />
               </div>
-              <div className="card">
+              <div className="card" onClick={handlerCard}>
                 <p>Improve the readability of the following code</p>
                 <img src={assets.code_icon} alt="" />
               </div>
@@ -72,11 +82,14 @@ const Main = () => {
         )}
 
         <div className="main-bottom">
-          <div onSubmit={() => onSent()} className="search-box">
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            if(input.trim()) onSent()
+          }} className="search-box">
             <input
               type="text"
               placeholder="Enter a prompt here"
-              onChange={(e) => setInput(e.target.value)}
+              onChange={inputChangeHandler}
               value={input}
             />
             <div>
@@ -86,7 +99,7 @@ const Main = () => {
                 <img src={assets.send_icon} alt="" onClick={() => onSent()} />
               ) : null}
             </div>
-          </div>
+          </form>
           <p className="bottom-info">
             Gemini may display inaccurate info, including about people, so
             double-check, its responses. Your privacy and Gemini Apps
